@@ -163,3 +163,18 @@ export type HackathonEventType = {
         slug: "smarttech-university-hackathon",
     },
 ];
+
+
+export const userObj = {
+    userId1: {
+        name: 'Akshay Khot',
+        email: "akshaykhot743@gmail.com",
+        hackathons: [{title: "Hackathon 1", slug:"/hackathon1"}, {title: "Hackathon 2", slug:"/hackathon2"}]
+    },
+    userId2: {
+        name: 'Joe Khot',
+        email: "joe07@gmail.com",
+        hackathons: [{title: "Hackathon 3", slug:"/hackathon3"}, {title: "Hackathon 4", slug:"/hackathon4"}]
+    }
+
+}

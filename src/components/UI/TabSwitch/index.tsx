@@ -76,7 +76,7 @@ const TabSwitch = ({ data }: TabSwitchType) => {
               )}
               value={key}
             >
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {values.map((item) => (
                   <div key={item.title}>
                     <HackathonCard item={item} />
