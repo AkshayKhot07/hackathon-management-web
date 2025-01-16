@@ -2,26 +2,31 @@
 
 import { Form, Formik, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { firebaseAuth } from "../../../firebase.config";
+import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth"
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 type RegisterFormTypes = {
-  name: string;
+  // name: string;
   email: string;
   password: string;
   confirmPassword: string;
 };
 
 const initialValues: RegisterFormTypes = {
-  name: "",
+  // name: "",
   email: "",
   password: "",
   confirmPassword: "",
 };
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string()
-    .required("Name is required")
-    .min(2, "Name must be at least 2 characters")
-    .max(50, "Name must not exceed 50 characters"),
+  // name: Yup.string()
+  //   .required("Name is required")
+  //   .min(2, "Name must be at least 2 characters")
+  //   .max(50, "Name must not exceed 50 characters"),
   email: Yup.string()
     .required("Email is required")
     .email("Invalid email format"),
@@ -38,12 +43,28 @@ const validationSchema = Yup.object().shape({
 });
 
 const RegisterForm = () => {
-  const handleRegister = (
+  const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(firebaseAuth);
+  const router = useRouter();
+
+  useEffect(() => {
+    router.refresh();
+  }, []);
+
+  const handleRegister = async (
     values: RegisterFormTypes,
     { resetForm }: { resetForm: () => void }
   ) => {
     console.log("Form submitted with values:", values);
-    resetForm();
+    const {email, password} = values;
+
+    try {
+      const response = await createUserWithEmailAndPassword(email, password);
+      console.log("RESPONSE", response)
+      router.push("/");
+      // resetForm();
+    } catch(err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -62,7 +83,7 @@ const RegisterForm = () => {
           {({}) => (
             <Form className="mt-8 space-y-6" autoComplete="off">
               <div className="rounded-md shadow-sm space-y-4">
-                <div>
+                {/* <div>
                   <label
                     htmlFor="name"
                     className="block text-sm font-medium text-secondary-2"
@@ -82,7 +103,7 @@ const RegisterForm = () => {
                     component="div"
                     className="text-red-500 text-sm"
                   />
-                </div>
+                </div> */}
 
                 <div>
                   <label
@@ -158,6 +179,9 @@ const RegisterForm = () => {
                 >
                   Register
                 </button>
+              </div>
+              <div className="text-blue-700 text-center">
+                <Link href={"/auth/login"}>Login</Link>
               </div>
             </Form>
           )}

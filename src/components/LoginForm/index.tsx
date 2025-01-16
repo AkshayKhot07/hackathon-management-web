@@ -1,7 +1,11 @@
 "use client";
-
 import { Form, Formik, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { firebaseAuth } from "../../../firebase.config";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useEffect } from "react";
 
 type LoginFormTypes = {
   email: string;
@@ -14,20 +18,37 @@ const initialValues: LoginFormTypes = {
 };
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string()
-    .required("Email is required"),
-  password: Yup.string()
-    .required("Password is required")
-
+  email: Yup.string().required("Email is required"),
+  password: Yup.string().required("Password is required"),
 });
 
 const LoginForm = () => {
-  const handleRegister = (
+  const [signInWithEmailAndPassword] =
+    useSignInWithEmailAndPassword(firebaseAuth);
+  const router = useRouter();
+
+  useEffect(() => {
+    router.refresh();
+  }, []);
+
+  const handleLogin = async (
     values: LoginFormTypes,
     { resetForm }: { resetForm: () => void }
   ) => {
     console.log("Form submitted with values:", values);
-    resetForm();
+    const { email, password } = values;
+    try {
+      const response = await signInWithEmailAndPassword(email, password);
+      console.log("SIGN IN RESPONSE", response);
+      if(response?.user?.email !== "admin@hackathon.com") {
+        router.push("/");
+      } else if (response?.user?.email === "admin@hackathon.com") {
+        router.push("/admin/dashboard");
+      }
+      // resetForm();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -41,13 +62,11 @@ const LoginForm = () => {
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={handleRegister}
+          onSubmit={handleLogin}
         >
           {({}) => (
             <Form className="mt-8 space-y-6" autoComplete="off">
               <div className="rounded-md shadow-sm space-y-4">
-
-
                 <div>
                   <label
                     htmlFor="email"
@@ -91,7 +110,6 @@ const LoginForm = () => {
                     className="text-red-500 text-sm"
                   />
                 </div>
-
               </div>
 
               <div>
@@ -101,6 +119,10 @@ const LoginForm = () => {
                 >
                   Login
                 </button>
+              </div>
+
+              <div className="text-blue-700 text-center">
+                <Link href={"/auth/register"}>Register</Link>
               </div>
             </Form>
           )}

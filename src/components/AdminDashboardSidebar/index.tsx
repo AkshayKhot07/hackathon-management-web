@@ -12,12 +12,12 @@ export default function AdminDashboardSidebar() {
 
   return (
     <div className="mt-5 flex flex-row md:flex-col gap-4 items-start">
-      <Link href={"/admin/dashboard/hackathons"}>
+      <Link href={"/admin/dashboard"}>
         <div
           className={classNames(
             "flex gap-2 items-center justify-center  font-semibold text-xl",
 
-            pathname.includes("/hackathons")
+            pathname.includes("/admin/dashboard") && !pathname.includes("/users")
               ? "text-primary-1"
               : "text-secondary-1"
           )}

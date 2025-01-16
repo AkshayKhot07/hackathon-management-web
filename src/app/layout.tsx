@@ -28,13 +28,7 @@ export default function RootLayout({
         // className={`${geistSans.variable} ${geistMono.variable} antialiased container`}
         className={`container`}
       >
-
-        <nav className="py-4 border border-black">
-          Navbar
-        </nav>
-        <div className="py-4">
         {children}
-        </div>
       </body>
     </html>
   );

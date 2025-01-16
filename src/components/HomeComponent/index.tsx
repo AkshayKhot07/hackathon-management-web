@@ -9,6 +9,8 @@ import Filters from "../Filters";
 import TabSwitch from "../UI/TabSwitch";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { firebaseAuth } from "../../../firebase.config";
+import { signOut } from "firebase/auth";
 
 export interface FiltersType {
   name: string;
@@ -48,7 +50,7 @@ const HomeComponent = () => {
         return acc;
       }, {} as CategorizedHackathonDataType);
 
-      console.log("UPDATED", updatedData)
+      console.log("UPDATED", updatedData);
 
       setModifiedHackathonData(updatedData);
     } else {
@@ -60,10 +62,22 @@ const HomeComponent = () => {
   console.log("modifiedHackathonData", modifiedHackathonData);
 
   return (
-    <div>
-      <Filters setFilters={setFilters} />
-      <TabSwitch data={modifiedHackathonData} />
-    </div>
+    <>
+      <div>
+        <div>
+          <button
+            className="border border-black p-2"
+            onClick={() => {
+              signOut(firebaseAuth);
+            }}
+          >
+            Logout
+          </button>
+        </div>
+        <Filters setFilters={setFilters} />
+        <TabSwitch data={modifiedHackathonData} />
+      </div>
+    </>
   );
 };
 
